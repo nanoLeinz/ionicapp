@@ -1,56 +1,55 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
+    <ion-header>
       <ion-toolbar>
-        <ion-title>Blank</ion-title>
+        <ion-title>Harga Crypto</ion-title>
       </ion-toolbar>
     </ion-header>
 
-    <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Blank</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
-      <div id="container">
-        <strong>Ready to create an app?</strong>
-        <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-      </div>
+    <ion-content class="ion-padding">
+      <ion-button @click="fetchData">Get Data</ion-button>
+      <ion-grid>
+        <ion-row>
+          <ion-col><strong>Name</strong></ion-col>
+          <ion-col><strong>Symbol</strong></ion-col>
+          <ion-col><strong>Price USD</strong></ion-col>
+        </ion-row>
+        <ion-row v-for="coin in coins" :key="coin.id">
+          <ion-col>{{ coin.name }}</ion-col>
+          <ion-col>{{ coin.symbol }}</ion-col>
+          <ion-col>{{ coin.price_usd }}</ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-content>
   </ion-page>
 </template>
 
-<script setup lang="ts">
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+<script>
+import axios from 'axios';
+
+export default {
+  name: 'Home',
+  data() {
+    return {
+      coins: []
+    };
+  },
+  methods: {
+    fetchData() {
+      axios.get('https://api.coinlore.net/api/tickers/')
+        .then(response => {
+          this.coins = response.data.data;
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    }
+  }
+};
 </script>
 
 <style scoped>
-#container {
-  text-align: center;
-  
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
-}
-
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-  
-  color: #8c8c8c;
-  
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
+ion-grid {
+  margin-top: 20px;
 }
 </style>
